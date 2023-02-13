@@ -21,8 +21,6 @@ HMODULE GTX() {
 		&module);
 	return module;
 }
-
-
 //# * id .......... identifikační číslo osoby
 //# * givenName ... jméno
 //# * sn .......... příjmení
@@ -31,20 +29,16 @@ HMODULE GTX() {
 //# * weight ...... váha
 //# * mother_id ... identifikační číslo matky (-1 = nedefinované)
 //# * father_id ... identifikační číslo otce (-1 = nedefinované)
-
-
-class Person {        // The class
-public:          // Access specifier
-	int id;  // Attribute
-	std::string givenName;  // Attribute
+class Person {
+public:
+	int id;
+	std::string givenName;
 	std::string sn;
 	std::string birthday;
 	int height;
     double weight;
 	int mother_id;
 	int father_id;
-	// int p_id,std::string p_givenName, std::string p_sn, std::string p_birthday, int p_height, int p_weight, int p_mother_id, int p_father_id
-	//Person(int p_weight,int p_id,int p_father_id, std::string p_birthday, std::string p_sn, int p_height, std::string p_givenName, int p_mother_id)
 	Person(double p_weight,int p_id,int p_father_id, std::string p_birthday, std::string p_sn, int p_height, std::string p_givenName, int p_mother_id) {
 		id = p_id;
 		givenName = p_givenName;
@@ -56,79 +50,6 @@ public:          // Access specifier
 		father_id = p_father_id;
 	}
 };
-
-
-//linked
-typedef struct dll_entry {
-	int value;
-	struct dll_entry* prev;
-	struct dll_entry* next;
-} dll_entry_t;
-typedef struct {
-	dll_entry_t* head;
-	dll_entry_t* tail;
-} doubly_linked_list_t;
-
-dll_entry_t*
-allocate_dll_entry(int
-	value)
-{
-	dll_entry_t* new_entry = (
-		dll_entry_t*)malloc(
-			sizeof(dll_entry_t));
-	assert(new_entry);
-	new_entry->value = value;
-	new_entry->next = NULL;
-	new_entry->prev = NULL;
-	return new_entry;
-}
-
-void insert_dll(int value, dll_entry_t* cur)
-{
-	assert(cur);
-	dll_entry_t* new_entry = allocate_dll_entry(value);
-	new_entry->next = cur;
-	new_entry->prev = cur->prev;
-	if (cur->prev != NULL) {
-		cur->prev->next = new_entry;
-	}
-	cur->prev = new_entry;
-}
-
-void push_dll(int value, doubly_linked_list_t* list)
-{
-	assert(list);
-	dll_entry_t* new_entry = allocate_dll_entry(value);
-	if (list->head) { // an entry already in the list
-		new_entry->next = list->head; // connect new -> head
-		list->head->prev = new_entry; // connect new <- head
-	}
-	else { //list is empty
-		list->tail = new_entry;
-	}
-	list->head = new_entry; //update the head
-}
-
-void print_dll(const doubly_linked_list_t* list)
-{
-	if (list && list->head) {
-		dll_entry_t* cur = list->head;
-		while (cur) {
-			printf("%i%s", cur->value, cur->next ? " " : "\n");
-			cur = cur->next;
-		}
-	}
-}
-void printReverse(const doubly_linked_list_t* list)
-{
-	if (list && list->tail) {
-		dll_entry_t* cur = list->tail;
-		while (cur) {
-			printf("%i%s", cur->value, cur->prev ? " " : "\n");
-			cur = cur->prev;
-		}
-	}
-}
 
 std::vector<std::string> split_return(std::string str, char del) {
 	std::string temp = "";
@@ -148,8 +69,156 @@ std::vector<std::string> split_return(std::string str, char del) {
 }
 
 
+
+
+struct Node {
+	int data;
+	struct Node* prev, * next;
+};
+
+Node* newNode(int val)
+{
+	Node* temp = new Node;
+	temp->data = val;
+	temp->prev = temp->next = nullptr;
+	return temp;
+}
+void displayList(Node* head)
+{
+	while (head->next != nullptr) {
+		std::cout << head->data << " <==> ";
+		head = head->next;
+	}
+	std::cout << head->data << std::endl;
+}
+
+// Insert a new node at the head of the list
+void insert(Node** head, int node_data)
+{
+	Node* temp = newNode(node_data);
+	temp->next = *head;
+	(*head)->prev = temp;
+	(*head) = temp;
+}
+
+// reverse the doubly linked list
+void reverseList(Node** head)
+{
+	Node* left = *head, * right = *head;
+
+	// traverse entire list and set right next to right
+	while (right->next != nullptr)
+		right = right->next;
+
+	//swap left and right data by moving them towards each other till they meet or cross
+	while (left != right && left->prev != right) {
+
+		// Swap left and right pointer data
+	/*	swap(left->data, right->data);*/
+		
+		int temp = left->data;
+		left->data = right->data;
+		right->data = temp;
+
+		// Advance left pointer
+		left = left->next;
+
+		// Advance right pointer
+		right = right->prev;
+	}
+}
+
+
+
+
+//struct node {
+//	// part which will store data
+//	Person data;
+//	// pointer to the previous node
+//	node* prev;
+//	// pointer to the next node
+//	node* next;
+//
+//};
+//
+//struct  doubly_linked_list_t {
+//	node* head;
+//	node* tail;
+//};
+//
+//// function to revrese the doubly linked list
+//void reverse(node** head_ref)
+//{
+//	node* temp = NULL;
+//	node* current = *head_ref;
+//
+//	// to reverse the list we just swap the next and prev of all the nodes
+//	while (current != NULL) {
+//		temp = current->prev;
+//		current->prev = current->next;
+//		current->next = temp;
+//		current = current->prev;
+//	}
+//
+//	// edge case
+//	if (temp != NULL)
+//		*head_ref = temp->prev;
+//}
+
 //typeid(result).name()
 int main() {
+
+	Node* headNode = newNode(5);
+	insert(&headNode, 4);
+	insert(&headNode, 3);
+	insert(&headNode, 2);
+	insert(&headNode, 1);
+	std::cout << "Original doubly linked list: " << std::endl;
+	displayList(headNode);
+	std::cout << "Reverse doubly linked list: " << std::endl;
+	reverseList(&headNode);
+	displayList(headNode);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	std::string result;
 	HRSRC res = FindResource(GTX(), MAKEINTRESOURCE(PEOPLE_TEXT), MAKEINTRESOURCE(TEXTFILE));
 	if (res == 0) throw std::invalid_argument("File not found");
@@ -159,8 +228,9 @@ int main() {
 	char* final = (char*)LockResource(data);
 	result.assign(final, size);
 
-	doubly_linked_list_t list = { NULL, NULL };
-	doubly_linked_list_t* lst = &list;
+	//storing to vbs
+	//doubly_linked_list_t list = { NULL, NULL };
+	//doubly_linked_list_t* lst = &list;
 	
 	std::vector<std::string> person_info = split_return(result, '\n');
 	/*std::regex rx("(^[1-9](?:[0-9]*)?[\\.][0-9]),([0-9]{5}),((?:-1|[0-9]{5})),([0-9]*[-][0-9]{1,2}[-][0-9]{1,2}),([A-Z][a-z]*),([0-9]{1,3}),([A-Z][a-z]*),((?:-1|[0-9]{5}))");*/
@@ -174,21 +244,19 @@ int main() {
 		if (mr.size() - 1 != 8) {
 			throw std::invalid_argument("Validation error occured");
 		}
-		//std::stoi()
-		std::cout << mr[0];
-		std::cout << std::endl;
-
 		//double p_weight, int p_id, int p_father_id, std::string p_birthday, std::string p_sn, int p_height, std::string p_givenName, int p_mother_id
-		Person ent5 = Person((double)stod(mr[1].str()),stoi(mr[2].str()), stoi(mr[3].str()),mr[4].str(), mr[5].str(), stoi(mr[6].str()),mr[7].str(), stoi(mr[6].str()));
+		Person record = Person((double)stod(mr[1].str()), stoi(mr[2].str()), stoi(mr[3].str()), mr[4].str(), mr[5].str(), stoi(mr[6].str()), mr[7].str(), stoi(mr[6].str()));
+		/*push_dll(record, lst);*/
+		/*allocate_dll_entry(record);*/
 	}
 
-	/*, mr[2], mr[3], mr[4], mr[5], mr[6], mr[7], mr[8]*/
 
-	
-	
+	//std::cout << typeid(lst->head->value).name();
 
-	//printf("Regular print: ");
-	//print_dll(lst);
+
+
+
+	/*print_dll(lst->head->value.id);*/
 	//printf("Revert print: ");
 	//printReverse(lst);
 	//free_dll(lst);
