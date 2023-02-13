@@ -39,6 +39,9 @@ public:
     double weight;
 	int mother_id;
 	int father_id;
+
+
+
 	Person(double p_weight,int p_id,int p_father_id, std::string p_birthday, std::string p_sn, int p_height, std::string p_givenName, int p_mother_id) {
 		id = p_id;
 		givenName = p_givenName;
@@ -49,7 +52,16 @@ public:
 		mother_id = p_mother_id;
 		father_id = p_father_id;
 	}
+
+	Person() {
+	}
+
+
+
 };
+
+
+
 
 std::vector<std::string> split_return(std::string str, char del) {
 	std::string temp = "";
@@ -68,155 +80,192 @@ std::vector<std::string> split_return(std::string str, char del) {
 	return string_split;
 }
 
+class node //struct
+{
+public:
+    //previous nad next
+    node* previousptr;
+    node* nextptr;
 
-
-
-struct Node {
-	int data;
-	struct Node* prev, * next;
+    int data;
+    ////////////////////////////////just to asure that user can insert any data type value in the linked list
+    Person person;
+    ////////////////////////////////just to asure that user can insert any data type value in the linked list
+    node()
+    {
+        previousptr, nextptr = NULL;
+    }
+    node(Person p) {
+        person = p;
+        previousptr ,nextptr = NULL;
+    }
+    ////////////////////////////////just to asure that user can insert any data type value in the linked list
+    //TO Get the data
+    Person getpersonData()
+    {
+        return person;
+    }
+    //TO Set the data
+    void setpersonData(Person p) {
+        person = p;
+    }
+    //////////////////////////////Just for the sake of implementing for any data type//////////////////////////////
+    node* getNextptr()
+    {
+        return nextptr;
+    }
+    void setnextptr(node* nptr)
+    {
+        nextptr = nptr;
+    }
 };
 
-Node* newNode(int val)
+
+class linkedlist
 {
-	Node* temp = new Node;
-	temp->data = val;
-	temp->prev = temp->next = nullptr;
-	return temp;
-}
-void displayList(Node* head)
-{
-	while (head->next != nullptr) {
-		std::cout << head->data << " <==> ";
-		head = head->next;
-	}
-	std::cout << head->data << std::endl;
-}
+    node* tailptr;
+    node* headptr;
+    node* addnodeatspecificpoition;
 
-// Insert a new node at the head of the list
-void insert(Node** head, int node_data)
-{
-	Node* temp = newNode(node_data);
-	temp->next = *head;
-	(*head)->prev = temp;
-	(*head) = temp;
-}
+public:
+    linkedlist()
+    {
+        headptr = NULL;
+    }
+    void insertionAtTail(node* n)
+    {
+        if (headptr == NULL)
+        {
+            headptr = n;
+        }
+        else
+        {
+            node* rptr = headptr;
+            while (rptr->getNextptr() != NULL)
+            {
+                rptr = rptr->getNextptr();
+            }
+            rptr->setnextptr(n);
+        }
+    }
 
-// reverse the doubly linked list
-void reverseList(Node** head)
-{
-	Node* left = *head, * right = *head;
+    void insertionAtHead(node* n)
+    {
+        node* tmp = n;
+        tmp->setnextptr(headptr);
+        headptr = tmp;
+    }
 
-	// traverse entire list and set right next to right
-	while (right->next != nullptr)
-		right = right->next;
+    int sizeOfLinkedList()
+    {
+        int i = 1;
+        node* ptr = headptr;
+        while (ptr->getNextptr() != NULL)
+        {
+            ++i;
+            ptr = ptr->getNextptr();
+        }
+        return i;
+    }
 
-	//swap left and right data by moving them towards each other till they meet or cross
-	while (left != right && left->prev != right) {
+    bool isListEmpty() {
+        if (sizeOfLinkedList() <= 1)
+        {
+            return true;
+        }
+        else
+        {
+            false;
+        }
+    }
 
-		// Swap left and right pointer data
-	/*	swap(left->data, right->data);*/
-		
-		int temp = left->data;
-		left->data = right->data;
-		right->data = temp;
+    void insertionAtAnyPoint(node* n, int position)
+    {
+        if (position > sizeOfLinkedList() || position < 1) {
+            std::cout << "\n\nInvalid insertion at index :" << position;
+            std::cout << ".There is no index " << position << " in the linked list.ERROR.\n\n";
+            return;
+        }
 
-		// Advance left pointer
-		left = left->next;
-
-		// Advance right pointer
-		right = right->prev;
-	}
-}
+        addnodeatspecificpoition = new node;
+        addnodeatspecificpoition = n;
+        addnodeatspecificpoition->setnextptr(NULL);
 
 
 
+        if (headptr == NULL)
+        {
+            headptr = addnodeatspecificpoition;
+        }
+        else if (position == 0)
+        {
+            addnodeatspecificpoition->setnextptr(headptr);
+            headptr = addnodeatspecificpoition;
+        }
+        else
+        {
+            node* current = headptr;
+            int i = 1;
+            for (i = 1; current != NULL; i++)
+            {
+                if (i == position)
+                {
+                    addnodeatspecificpoition->setnextptr(current->getNextptr());
+                    current->setnextptr(addnodeatspecificpoition);
+                    break;
+                }
+                current = current->getNextptr();
+            }
+        }
+    }
 
-//struct node {
-//	// part which will store data
-//	Person data;
-//	// pointer to the previous node
-//	node* prev;
-//	// pointer to the next node
-//	node* next;
-//
-//};
-//
-//struct  doubly_linked_list_t {
-//	node* head;
-//	node* tail;
-//};
-//
-//// function to revrese the doubly linked list
-//void reverse(node** head_ref)
-//{
-//	node* temp = NULL;
-//	node* current = *head_ref;
-//
-//	// to reverse the list we just swap the next and prev of all the nodes
-//	while (current != NULL) {
-//		temp = current->prev;
-//		current->prev = current->next;
-//		current->next = temp;
-//		current = current->prev;
-//	}
-//
-//	// edge case
-//	if (temp != NULL)
-//		*head_ref = temp->prev;
-//}
+
+    friend std::ostream& operator<<(std::ostream& output, const linkedlist& L)
+    {
+     
+        int i = 1;
+        node* ptr = L.headptr;
+        while (ptr->getNextptr() != NULL)
+        {
+            ++i;
+           
+            /// <summary>
+            output << ptr->getpersonData().id << std::endl;
+          
+            /// </summary>
+            /// <param name="output"></param>
+            /// <param name="L"></param>
+            /// <returns></returns>
+
+            ptr = ptr->getNextptr();
+        }
+
+        /// <summary>
+      
+       output << ptr->getpersonData().id << std::endl;
+     
+        /// </summary>
+        /// <param name="output"></param>
+        /// <param name="L"></param>
+        /// <returns></returns>
+
+        if (ptr->getNextptr() == NULL)
+        {
+            output << "\nNULL (There is no pointer left)\n";
+        }
+        return output;
+    }
+    ~linkedlist() {
+        delete addnodeatspecificpoition;
+    }
+};
+
+
 
 //typeid(result).name()
 int main() {
 
-	Node* headNode = newNode(5);
-	insert(&headNode, 4);
-	insert(&headNode, 3);
-	insert(&headNode, 2);
-	insert(&headNode, 1);
-	std::cout << "Original doubly linked list: " << std::endl;
-	displayList(headNode);
-	std::cout << "Reverse doubly linked list: " << std::endl;
-	reverseList(&headNode);
-	displayList(headNode);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	linkedlist L1;
 
 
 	std::string result;
@@ -248,18 +297,11 @@ int main() {
 		Person record = Person((double)stod(mr[1].str()), stoi(mr[2].str()), stoi(mr[3].str()), mr[4].str(), mr[5].str(), stoi(mr[6].str()), mr[7].str(), stoi(mr[6].str()));
 		/*push_dll(record, lst);*/
 		/*allocate_dll_entry(record);*/
+        L1.insertionAtTail(new node(record));
 	}
+    std::cout << L1;
 
-
-	//std::cout << typeid(lst->head->value).name();
-
-
-
-
-	/*print_dll(lst->head->value.id);*/
-	//printf("Revert print: ");
-	//printReverse(lst);
-	//free_dll(lst);
+    std::cout << "\nThe size of linked list after insertion of elements is : " << L1.sizeOfLinkedList();
 
 	return 0;
 }
